@@ -43,7 +43,7 @@ def self.initStatusBar(menu)
   status_bar = NSStatusBar.systemStatusBar
   status_item = status_bar.statusItemWithLength(NSVariableStatusItemLength)
   status_item.setMenu menu 
-  img = NSImage.new.initWithContentsOfFile 'green.png'
+  img = NSImage.new.initWithContentsOfFile ARGV[0] + '.png'
   status_item.setImage(img)
 end
 
@@ -61,7 +61,7 @@ end
 
 
 def self.update(sender)
-  url = NSURL.URLWithString(ARGV[0])
+  url = NSURL.URLWithString(ARGV[1])
 #    alert = NSAlert.new
 #    alert.messageText = 'LLSecStat, Lincoln Labs, 2012'
 #    alert.informativeText = 'Nate St. Germain, 11-70'
