@@ -4,70 +4,96 @@
 framework 'Cocoa'
 
 class StatusBar
-# Initialize the stuff
-#
+
+def self.set_menu_items
+    @year = Time.now.year.to_s
+    @title = 'Troll-o-matic'
+    @author = 'nate'
+    @about = ["Troll-o-matic\nbendable pliers, inc.\n#{@year}", @author, "Thanks"]
+    @menus = {"Update" => "update:", "Display" => "display:", "About #{@title}" => "about:"}
+end
+
 # We build the status bar item menu
-def self.setupMenu
+def self.setup_menu(menus)
   menu = NSMenu.new
-  menu.initWithTitle 'LLSecStat'
+  menu.initWithTitle @title
   menu = NSMenu.new
-  mi = NSMenuItem.new
-  mi.title = 'Update'
-  mi.action = 'update:'
-  mi.target = self
-  menu.addItem mi
-
-  mi = NSMenuItem.new
-  mi.title = 'Display status'
-  mi.action = 'display:'
-  mi.target = self
-  menu.addItem mi
-
-  mi = NSMenuItem.new
-  mi.title = 'About LLSecStat'
-  mi.action = 'about:'
-  mi.target = self
-  menu.addItem mi
-  
-#  mi = NSMenuItem.new
-#  mi.title = 'Quit'
-#  mi.action = 'quit:'
-#  mi.target = self
-#  menu.addItem mi
-
+  menus.each_pair do |k,v|
+      mi = NSMenuItem.new
+      mi.title = k 
+      mi.action = v 
+      mi.target = self
+      menu.addItem mi
+  end
   menu
 end
 
 # Init the status bar
-def self.initStatusBar(menu)
+def self.init_status_bar(menu)
   status_bar = NSStatusBar.systemStatusBar
   status_item = status_bar.statusItemWithLength(NSVariableStatusItemLength)
   status_item.setMenu menu 
-  img = NSImage.new.initWithContentsOfFile 'green.png'
+  img = NSImage.new.initWithContentsOfFile ARGV[0]
   status_item.setImage(img)
 end
 
 #
 # Menu Item Actions
 #
-def self.about(sender)
+def self.about(sender,about)
+    about = @about
     alert = NSAlert.new
-    alert.messageText = 'LLSecStat, Lincoln Labs, 2012'
-    alert.informativeText = 'Nate St. Germain, 11-70'
+    alert.messageText = about[0]
+    alert.informativeText = about[1]
     alert.alertStyle = NSInformationalAlertStyle
-    alert.addButtonWithTitle("Thanks")
+    alert.addButtonWithTitle(about[2])
+    alert.setIcon(NSImage.new.initWithContentsOfFile "/Users/n8/Desktop/trollface_big.png")
     response = alert.runModal
 end
 
 
+# set prefs
+
+def self.set_prefs
+  # writeToFile_atomically
+end
+
+# get prefs
+
+def self.get_prefs()
+  # test whether prefs exist
+  # if not, set_prefs with some defaults, then read them
+  # https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/UserDefaults/Introduction/Introduction.html
+  # @config = load_plist File.read("/Library/Preferences/pref.plist")
+  # read: NSDictionary.dictionaryWithContentsOfFile
+end
+
+
+# parse rss feed
+
+def self.parse_rss(feed)
+  feed = NSURL.URLWithString(ARGV[1])
+end
+
+# scrape a page for something
+
+def self.scrape_page(url)
+  url = NSURL.URLWithString(url)
+end
+
+# display menu action
+
+def self.display(sender)
+  url = NSURL.URLWithString(ARGV[1])
+  response = NSWorkspace.sharedWorkspace.openURL(url)
+end
+
+
+# update menu action
+
 def self.update(sender)
-  url = NSURL.URLWithString(ARGV[0])
-#    alert = NSAlert.new
-#    alert.messageText = 'LLSecStat, Lincoln Labs, 2012'
-#    alert.informativeText = 'Nate St. Germain, 11-70'
-#    alert.alertStyle = NSInformationalAlertStyle
-#    alert.addButtonWithTitle("Thanks")
-    response = NSWorkspace.sharedWorkspace.openURL(url)
+  url = NSURL.URLWithString(ARGV[1])
+  response = NSWorkspace.sharedWorkspace.openURL(url)
 end
 
 def quit(sender)
@@ -79,7 +105,7 @@ def self.new
   # Rock'n Roll
   app = NSApplication.sharedApplication
   # Create the status bar item, add the menu and set the image
-  initStatusBar(setupMenu)
+  init_status_bar(setup_menu(set_menu_items))
   app.run  
 end
 
