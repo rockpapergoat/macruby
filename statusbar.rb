@@ -35,7 +35,7 @@ def self.init_status_bar(menu)
   status_item.setMenu menu
   img = NSImage.new.initWithContentsOfFile ARGV[0]
   status_item.setImage(img)
-  status_item.setTitle("NORMAL")
+  status_item.setTitle("IT SEC STATUS: NORMAL")
 end
 
 #
@@ -103,11 +103,11 @@ def quit(sender)
 end
 
 def self.new
-  # Rock'n Roll
-  app = NSApplication.sharedApplication
-  # Create the status bar item, add the menu and set the image
-  init_status_bar(setup_menu(set_menu_items))
-  app.run
+    
+    app = NSApplication.sharedApplication
+    # Create the status bar item, add the menu and set the image
+    init_status_bar(setup_menu(set_menu_items))
+    app.run
 end
 
 end
